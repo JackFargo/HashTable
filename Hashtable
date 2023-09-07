@@ -1,0 +1,212 @@
+// --== Project One Hashtable ==--
+// Name: Jack Fargo
+// Email: jfargo@wisc.edu
+
+import java.util.NoSuchElementException;
+import java.util.LinkedList;
+
+public class HashtableMap<KeyType, ValueType> implements MapADT<KeyType, ValueType> {
+  protected LinkedList<LinkedNode<KeyType, ValueType>>[] hashTableMap;
+  private int capacity;
+  private int size;
+
+  /**
+   * Constructor for HashtableMap without parameters setting default capacity at 15
+   */
+  @SuppressWarnings("unchecked")
+  public HashtableMap() {
+    hashTableMap = (LinkedList<LinkedNode<KeyType, ValueType>>[]) new LinkedList[15];
+    capacity = 15;
+    size = 0;
+
+  }
+
+  /**
+   * Constructor for HashtbaleMap with parameters
+   * 
+   * @param capacity - capacity to set the Hashtable Map too
+   */
+  @SuppressWarnings("unchecked")
+  public HashtableMap(int capacity) {
+    hashTableMap = (LinkedList<LinkedNode<KeyType, ValueType>>[]) new LinkedList[capacity];
+    size = 0;
+    this.capacity = capacity;
+  }
+
+  /**
+   * Inserts a new, key-value, pair into the map if the map does not contain a value mapped to key
+   * yet.
+   * 
+   * @param key   the key of the, key-value, pair to store
+   * @param value the value that the key will map to
+   * @return true if the, key-value, pair was inserted into the map, false if a mapping for key
+   *         already exists and the new, key-value, pair could not be inserted
+   */
+  @Override
+  public boolean put(KeyType key, ValueType value) {
+    if (key == null || value == null) {
+      return false;
+    }
+    if (containsKey(key)) {
+      System.out.println("Key is already inside of the Map");
+      return false;
+    }
+    //int hash = hashFunction(key);
+    if (hashTableMap[hashFunction(key)] == null) {
+      hashTableMap[hashFunction(key)] = new LinkedList<LinkedNode<KeyType, ValueType>>();
+      hashTableMap[hashFunction(key)].add(new LinkedNode<KeyType, ValueType>(key, value));
+    } else {
+      hashTableMap[hashFunction(key)].add(new LinkedNode<KeyType, ValueType>(key, value));
+    }
+    size++;
+    if (size >= (hashTableMap.length * .75)) {
+      rehash();
+    }
+    return true;
+  }
+
+  /**
+   * This method returns the value mapped to a certain key if the map contains the proper mapping.
+   * 
+   * @param key the KeyType for the, key-value, pair to lookup
+   * @return the value mapped to the key
+   * @throws NoSuchElementException if the map does not contain a mapping for the key
+   */
+  @Override
+  public ValueType get(KeyType key) throws NoSuchElementException {
+    //int hash = hashFunction(key);
+    ValueType value = null;
+    if (hashTableMap[hashFunction(key)] == null) {
+      throw new NoSuchElementException("Index is null for the provided key");
+    }
+    for (int i = 0; i < hashTableMap[hashFunction(key)].size(); i++) {
+      if (hashTableMap[hashFunction(key)].get(i).getKey().equals(key)) {
+        value = hashTableMap[hashFunction(key)].get(i).getValue();
+      }
+    }
+    if (value == null) {
+      throw new NoSuchElementException("Value not found for the provided Key");
+    }
+    return value;
+  }
+
+  /**
+   * Removes a key and its value from the map.
+   * 
+   * @param key the KeyType for the, key-value, pair to remove
+   * @return the value for the, key-value, pair that was removed. Can also return null if the map
+   *         didn't contain any mapping for key
+   */
+  @Override
+  public ValueType remove(KeyType key) {
+    //int hash = hashFunction(key);
+    ValueType value = null;
+    if (hashTableMap[hashFunction(key)] == null) {
+      System.out.println("Map didn't contain mapping for the provided key");
+      return null;
+    }
+    for (int i = 0; i < hashTableMap[hashFunction(key)].size(); i++) {
+      if (hashTableMap[hashFunction(key)].get(i).getKey() == key) {
+        value = hashTableMap[hashFunction(key)].get(i).getValue();
+        hashTableMap[hashFunction(key)].remove(i);
+      }
+    }
+    return value;
+  }
+
+  /**
+   * This method checks to see if a key is stored in the map.
+   * 
+   * @param key the KeyType to check for
+   * @return true only if the key is stored by the map, otherwise it returns false
+   */
+  @Override
+  public boolean containsKey(KeyType key) {
+    //int hash = hashFunction(key);
+    if (hashTableMap[hashFunction(key)] == null)
+      return false;
+    for (int i = 0; i < hashTableMap[hashFunction(key)].size(); i++) {
+      if (hashTableMap[hashFunction(key)].get(i).getKey() == key) {
+      return true;
+    }
+    }
+    return false;
+  }
+
+  /**
+   * Returns the number of, key-value, pairs stored in the map.
+   * 
+   * @return the number of, key-value, pairs stored in the map
+   */
+  @Override
+  public int size() {
+    return this.size;
+  }
+
+  /**
+   * Removes all key, value pairs from the map
+   */
+  @Override
+  public void clear() {
+    for (int i = 0; i < hashTableMap.length; i++) {
+      hashTableMap[i] = null;
+    }
+    this.size = 0;
+
+  }
+
+  /**
+   * This method resizes the array but only when the load factor gets higher than the assigned value
+   * of .75.
+   */
+  @SuppressWarnings("unchecked")
+  public void rehash() {
+    LinkedList<LinkedNode<KeyType, ValueType>>[] tempHashtable =
+        (LinkedList<LinkedNode<KeyType, ValueType>>[]) new LinkedList[this.capacity * 2];
+    int newHashIndex;
+    for (int i = 0; i < hashTableMap.length; i++) {
+      if (hashTableMap[i] != null) {
+        for (int k = 0; k < hashTableMap[i].size(); k++) {
+          newHashIndex = Math.abs(hashTableMap[i].get(k).key.hashCode() % tempHashtable.length);
+          if (tempHashtable[newHashIndex] == null) {
+            tempHashtable[newHashIndex] = new LinkedList<LinkedNode<KeyType, ValueType>>();
+            tempHashtable[newHashIndex].add(hashTableMap[i].get(k));
+          } else {
+            tempHashtable[newHashIndex].add(hashTableMap[i].get(k));
+          }
+        }
+      }
+    }
+    hashTableMap = tempHashtable;
+    this.capacity = this.capacity * 2;
+  }
+
+  /**
+   * Method to clear up the repeated math and assignment found in the methods above.
+   * 
+   * @param key the KeyType to check for
+   * @return the absolute value of key modulo the length of the linked list
+   */
+  public int hashFunction(KeyType key) {
+    /*
+    int hash = Math.abs(key.hashCode() % hashTableMap.length);
+    for (int i = 0; i < hashTableMap[hash].size(); i++) {
+      if (hashTableMap[hash].get(i).getKey() == key) {
+        
+        return 0;
+    }
+    }*/
+    return Math.abs(key.hashCode() % hashTableMap.length);
+  }
+
+
+  /**
+   * This is a getter method that returns to the user the current capacity of the Hashtable Map
+   * 
+   * @return - current capacity of Hashtable map
+   */
+  public int getCapacity() {
+    return this.capacity;
+  }
+
+}
