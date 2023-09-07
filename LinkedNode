@@ -1,0 +1,51 @@
+// --== Project One Hashtable LinkedNode ==--
+// Name: Jack Fargo
+// Email: jfargo@wisc.edu
+
+/**
+ * This is a node that is inside of LinkedList that stores a KeyType and a ValueType. This only
+ * includes the get data methods for both the key and the value separately.
+ */
+public class LinkedNode<KeyType, ValueType> {
+  LinkedNode<KeyType, ValueType> next;
+  KeyType key;
+  ValueType value;
+
+  /**
+   * Constructor for LinkedNode class
+   * 
+   * @param key   - Key to access node
+   * @param value - value of map
+   */
+  public LinkedNode(KeyType key, ValueType value) {
+    this.key = key;
+    this.value = value;
+  }
+
+  /**
+   * getter method for KeyType
+   * 
+   * @return - returns the KeyType
+   */
+  public KeyType getKey() {
+    return this.key;
+  }
+
+  /*
+   * getter method for ValueType
+   * 
+   * @return - returns the ValueType
+   */
+  public ValueType getValue() {
+    return this.value;
+  }
+  
+  /**
+   * getNext method to iterate through the linked list.
+   * 
+   * @return - next key and value pair in the linked list
+   */
+  public LinkedNode<KeyType, ValueType> getNext() {
+    return next;
+  }
+}
