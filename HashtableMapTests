@@ -1,0 +1,134 @@
+// --== Project One Tester ==--
+// Name: Jack Fargo
+// Email: jfargo@wisc.edu
+
+public class HashtableMapTests {
+
+  /**
+   * tests the contains key method
+   * 
+   * @return - true if the contains method works correctly otherwise it returns false
+   */
+  public static boolean test1() {
+    HashtableMap<Integer, Integer> testHashTable = new HashtableMap<Integer, Integer>();
+    testHashTable.put(24, 33);
+    if (testHashTable.containsKey(24) == true) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * tests put and get using strings instead of integers
+   * 
+   * @return - true if get and put work correctly otherwise returns false
+   */
+  public static boolean test2() {
+    HashtableMap<String, String> testHashTable = new HashtableMap<String, String>();
+    testHashTable.put("key", "value");
+    testHashTable.put("keyType", "ValueType");
+    String string1 = testHashTable.get("key");
+    String string2 = testHashTable.get("keyType");
+    if (string1 == "value" && string2 == "ValueType") {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * tests the remove method
+   * 
+   * @return - true is key value pair is removed correctly otherwise returns false
+   */
+  public static boolean test3() {
+    HashtableMap<Integer, Integer> testHashTable = new HashtableMap<Integer, Integer>(25);
+    testHashTable.put(105, 36);
+    testHashTable.put(72, 225);
+    testHashTable.put(16, 46);
+    testHashTable.remove(72);
+    if (testHashTable.containsKey(72) == false && testHashTable.containsKey(105) == true) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * tests the rehashing method and get capacity method
+   * 
+   * @return - true if the  for the is equal to 10 otherwise it returns false
+   */
+  public static boolean test4() {
+    HashtableMap<Integer, Integer> testHashTable = new HashtableMap<Integer, Integer>(5);
+    testHashTable.put(105, 36);
+    testHashTable.put(72, 225);
+    testHashTable.put(16, 46);
+    testHashTable.put(69, 11);
+    testHashTable.put(5, 61);
+    if (testHashTable.getCapacity() == 10) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * tests the clear method
+   * 
+   * @return - true if the array is fully cleared correctly otherwise returns false
+   */
+  public static boolean test5() {
+    HashtableMap<Integer, Integer> clear1 = new HashtableMap<Integer, Integer>(5);
+    clear1.put(105, 36);
+    clear1.put(72, 225);
+    clear1.put(16, 46);
+    clear1.put(69, 11);
+    clear1.put(5, 61);
+    clear1.clear();
+    if (clear1.containsKey(105) || clear1.containsKey(72) || clear1.containsKey(16) || clear1.containsKey(69)) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * The runAll method is used to display to the user weather the tester for each of the method in
+   * the HashtableMap.java file ran correctly. It will only display a message to the screen through
+   * this method if one of the tests fails or all of them pass.
+   * 
+   * @return - returns failed if any one of the five test methods returns false.
+   */
+  public static boolean runAll() {
+    boolean failedTest = true;
+    if (test1() == false) {
+      System.out.println("Test 1 failed");
+      failedTest = false;
+    }
+    if (test2() == false) {
+      System.out.println("Test 2 failed");
+      failedTest = false;
+    }
+    if (test3() == false) {
+      System.out.println("Test 3 failed");
+      failedTest = false;
+    }
+    if (test4() == false) {
+      System.out.println("Test 4 failed");
+      failedTest = false;
+    }
+    if (test5() == false) {
+      System.out.println("Test 5 failed");
+      failedTest = false;
+    } else {
+      System.out.println("All tests passed");
+    }
+    return failedTest;
+  }
+
+  /**
+   * The main method in this class runs all the test methods.
+   * 
+   * @param args - not used
+   */
+  public static void main(String[] args) {
+    runAll();
+  }
+}
